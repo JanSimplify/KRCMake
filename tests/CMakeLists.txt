@@ -19,3 +19,5 @@ if(PROJECT_IS_TOP_LEVEL)
     include(CTest)
     find_package("${package_name}" REQUIRED)
 endif()
+
+add_subdirectory(dummy)
