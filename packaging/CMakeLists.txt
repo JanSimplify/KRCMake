@@ -13,7 +13,9 @@ set(INSTALL_CMAKE_MODULE_DIR "${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}")
 set(autogen_cmake_config_dir "${PROJECT_BINARY_DIR}/autogen/cmake")
 set(install_cmake_config_dir "${CMAKE_INSTALL_DATADIR}/cmake/${PROJECT_NAME}")
 
-set(module_files)
+set(module_files
+    "${PROJECT_SOURCE_DIR}/cmake/KRCMakeGitInfo.cmake"
+)
 
 #=============================
 # Module files
