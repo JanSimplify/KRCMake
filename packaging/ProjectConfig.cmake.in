@@ -1,0 +1,8 @@
+# SPDX-License-Identifier: MIT
+# SPDX-FileCopyrightText: Copyright (c) 2025 JanSimplify
+
+@PACKAGE_INIT@
+
+list(APPEND CMAKE_MODULE_PATH "@PACKAGE_INSTALL_CMAKE_MODULE_DIR@")
+
+check_required_components("@PROJECT_NAME@")
