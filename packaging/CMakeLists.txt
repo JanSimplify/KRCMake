@@ -15,6 +15,7 @@ set(install_cmake_config_dir "${CMAKE_INSTALL_DATADIR}/cmake/${PROJECT_NAME}")
 
 set(module_files
     "${PROJECT_SOURCE_DIR}/cmake/KRCMakeGitInfo.cmake"
+    "${PROJECT_SOURCE_DIR}/cmake/KRCMakeCompileOptions.cmake"
 )
 
 #=============================
