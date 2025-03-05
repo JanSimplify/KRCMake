@@ -108,3 +108,90 @@ function(krcmake_target_compile_options)
         )
     endforeach()
 endfunction()
+
+# krcmake_target_link_options(
+#   TARGETS [targets...]
+#   [BEFORE]
+#   [<PRIVATE|PUBLIC|INTERFACE>
+#       [MSVC_OPTIONS <options1>...]
+#       [GNU_C_OPTIONS <options2>...]
+#       [GNU_CXX_OPTIONS <options3>...]
+#       [CLANG_C_OPTIONS <options4>...]
+#       [CLANG_CXX_OPTIONS <options5>...]
+#   ]...
+# )
+function(krcmake_target_link_options)
+    set(options "BEFORE")
+    set(one_value_keywords)
+    set(multi_value_keywords "TARGETS;PUBLIC;INTERFACE;PRIVATE")
+
+    cmake_parse_arguments(
+        PARSE_ARGV 0
+        "arg"
+        "${options}"
+        "${one_value_keywords}"
+        "${multi_value_keywords}"
+    )
+
+    if(arg_UNPARSED_ARGUMENTS)
+        message(FATAL_ERROR "Unparsed arguments: ${arg_UNPARSED_ARGUMENTS}")
+    endif()
+
+    foreach(class IN ITEMS "PUBLIC" "INTERFACE" "PRIVATE")
+        cmake_parse_arguments(
+            "arg_${class}"
+            ""
+            ""
+            "MSVC_OPTIONS;GNU_C_OPTIONS;GNU_CXX_OPTIONS;CLANG_C_OPTIONS;CLANG_CXX_OPTIONS"
+            ${arg_${class}}
+        )
+
+        if(arg_${class}_UNPARSED_ARGUMENTS)
+            message(FATAL_ERROR "Unparsed ${class} arguments: ${arg_${class}_UNPARSED_ARGUMENTS}")
+        endif()
+
+        if(arg_${class}_MSVC_OPTIONS)
+            list(APPEND "${class}_options"
+                "$<$<OR:$<COMPILE_LANG_AND_ID:C,MSVC>,$<COMPILE_LANG_AND_ID:CXX,MSVC>>:${arg_${class}_MSVC_OPTIONS}>"
+            )
+        endif()
+
+        if(arg_${class}_GNU_C_OPTIONS)
+            list(APPEND "${class}_options"
+                "$<$<COMPILE_LANG_AND_ID:C,GNU>:${arg_${class}_GNU_C_OPTIONS}>"
+            )
+        endif()
+
+        if(arg_${class}_GNU_CXX_OPTIONS)
+            list(APPEND "${class}_options"
+                "$<$<COMPILE_LANG_AND_ID:CXX,GNU>:${arg_${class}_GNU_CXX_OPTIONS}>"
+            )
+        endif()
+
+        if(arg_${class}_CLANG_C_OPTIONS)
+            list(APPEND "${class}_options"
+                "$<$<COMPILE_LANG_AND_ID:C,Clang>:${arg_${class}_CLANG_C_OPTIONS}>"
+            )
+        endif()
+
+        if(arg_${class}_CLANG_CXX_OPTIONS)
+            list(APPEND "${class}_options"
+                "$<$<COMPILE_LANG_AND_ID:CXX,Clang>:${arg_${class}_CLANG_CXX_OPTIONS}>"
+            )
+        endif()
+    endforeach()
+
+    if(arg_BEFORE)
+        set(before_option "BEFORE")
+    endif()
+
+    foreach(target IN LISTS arg_TARGETS)
+        target_link_options(
+            "${target}"
+            ${before_option}
+            PUBLIC ${PUBLIC_options}
+            INTERFACE ${INTERFACE_options}
+            PRIVATE ${PRIVATE_options}
+        )
+    endforeach()
+endfunction()
