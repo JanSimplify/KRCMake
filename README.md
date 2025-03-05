@@ -44,3 +44,36 @@ krcmake_get_git_hash(
 - `OUTPUT_VARIABLE`：输出变量；
 - `WORKING_DIRECTORY`：`git`的工作目录；
 - `QUIET`：忽略错误。
+
+## 编译器和链接器选项
+
+### krcmake_target_compile_options
+
+为特定编译器以及语言设置相应的编译选项：
+
+```cmake
+krcmake_target_compile_options(
+    TARGETS [targets...]
+    [<PRIVATE|PUBLIC|INTERFACE>
+        [MSVC_OPTIONS <options1>...]
+        [GNU_C_OPTIONS <options2>...]
+        [GNU_CXX_OPTIONS <options3>...]
+        [CLANG_C_OPTIONS <options4>...]
+        [CLANG_CXX_OPTIONS <options5>...]
+    ]...
+)
+```
+
+以设置编译器诊断信息为例：
+
+```cmake
+krcmake_target_compile_options(
+    TARGETS <YourTargets>
+    PRIVATE
+        MSVC_OPTIONS /W4
+        GNU_C_OPTIONS -Wall -Wextra
+        GNU_CXX_OPTIONS -Wall -Wextra
+        CLANG_C_OPTIONS -Wall -Wextra
+        CLANG_CXX_OPTIONS -Wall -Wextra
+)
+```
