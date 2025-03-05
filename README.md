@@ -97,3 +97,24 @@ krcmake_target_link_options(
 ```
 
 `BEFORE`指定将新增字段添加至已有链接选项的前面。
+
+## 辅助函数
+
+### krcmake_target_set_develop_mode
+
+设置严格的编译器诊断选项，包括但不限于`-Wall`和`-Wextra`：
+
+```cmake
+krcmake_target_set_develop_mode(
+    TARGETS [targets...]
+    [WARNING_AS_ERROR]
+    [ERROR_AS_FATAL]
+)
+```
+
+详细信息请查看`KRCMakeCompileOptions.cmake`文件。剩余两个参数用于提升错误级别：
+
+- `WARNING_AS_ERROR`：将警告视为错误；
+- `ERROR_AS_FATAL`：将错误视为致命错误，通常导致立即停止后续处理。
+
+注意：`MSVC`不支持`ERROR_AS_FATAL`功能，将静默忽略。
