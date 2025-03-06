@@ -26,3 +26,4 @@ endif()
 
 add_subdirectory(dummy)
 add_subdirectory(target_compile_options)
+add_subdirectory(target_link_options)

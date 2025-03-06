@@ -77,3 +77,23 @@ krcmake_target_compile_options(
         CLANG_CXX_OPTIONS -Wall -Wextra
 )
 ```
+
+### krcmake_target_link_options
+
+为特定编译器以及语言设置相应的编译选项：
+
+```cmake
+krcmake_target_link_options(
+    TARGETS [targets...]
+    [BEFORE]
+    [<PRIVATE|PUBLIC|INTERFACE>
+        [MSVC_OPTIONS <options1>...]
+        [GNU_C_OPTIONS <options2>...]
+        [GNU_CXX_OPTIONS <options3>...]
+        [CLANG_C_OPTIONS <options4>...]
+        [CLANG_CXX_OPTIONS <options5>...]
+    ]...
+)
+```
+
+`BEFORE`指定将新增字段添加至已有链接选项的前面。
