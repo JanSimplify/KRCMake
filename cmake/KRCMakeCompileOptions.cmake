@@ -499,3 +499,46 @@ function(krcmake_target_set_sanitizer)
         )
     endif()
 endfunction()
+
+# krcmake_target_set_coverage(
+#   TARGETS [targets...]
+# )
+function(krcmake_target_set_coverage)
+    set(options)
+    set(one_value_keywords)
+    set(multi_value_keywords "TARGETS")
+
+    cmake_parse_arguments(
+        PARSE_ARGV 0
+        "arg"
+        "${options}"
+        "${one_value_keywords}"
+        "${multi_value_keywords}"
+    )
+
+    if(arg_UNPARSED_ARGUMENTS)
+        message(FATAL_ERROR "Unparsed arguments: ${arg_UNPARSED_ARGUMENTS}")
+    endif()
+
+    if(NOT arg_TARGETS)
+        message(FATAL_ERROR "${CMAKE_CURRENT_FUNCTION} called with incorrect number of arguments")
+    endif()
+
+    krcmake_target_compile_options(
+        TARGETS ${arg_TARGETS}
+        PRIVATE
+            GNU_C_OPTIONS "--coverage"
+            GNU_CXX_OPTIONS "--coverage"
+            CLANG_C_OPTIONS "--coverage"
+            CLANG_CXX_OPTIONS "--coverage"
+    )
+
+    krcmake_target_link_options(
+        TARGETS ${arg_TARGETS}
+        PUBLIC
+            GNU_C_OPTIONS "--coverage"
+            GNU_CXX_OPTIONS "--coverage"
+            CLANG_C_OPTIONS "--coverage"
+            CLANG_CXX_OPTIONS "--coverage"
+    )
+endfunction()
