@@ -118,3 +118,17 @@ krcmake_target_set_develop_mode(
 - `ERROR_AS_FATAL`：将错误视为致命错误，通常导致立即停止后续处理。
 
 注意：`MSVC`不支持`ERROR_AS_FATAL`功能，将静默忽略。
+
+### krcmake_target_set_sanitizer
+
+设置sanitizer编译和链接选项：
+
+```cmake
+# krcmake_target_set_sanitizer(
+#   TARGETS [targets...]
+#   [ADDRESS]
+#   [UNDEFINED]
+# )
+```
+
+注意：`MSVC`不支持`UNDEFINED`选项，静默忽略。
