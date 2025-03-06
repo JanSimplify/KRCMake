@@ -28,6 +28,9 @@ cmake_minimum_required(VERSION 3.19 FATAL_ERROR)
 
 include_guard(GLOBAL)
 
+include(CheckCCompilerFlag)
+include(CheckCXXCompilerFlag)
+
 # krcmake_target_compile_options(
 #   TARGETS [targets...]
 #   [<PRIVATE|PUBLIC|INTERFACE>
@@ -194,4 +197,243 @@ function(krcmake_target_link_options)
             PRIVATE ${PRIVATE_options}
         )
     endforeach()
+endfunction()
+
+# krcmake_target_set_develop_mode(
+#   TARGETS [targets...]
+#   [WARNING_AS_ERROR]
+#   [ERROR_AS_FATAL]
+# )
+function(krcmake_target_set_develop_mode)
+    set(options "WARNING_AS_ERROR;ERROR_AS_FATAL")
+    set(one_value_keywords)
+    set(multi_value_keywords "TARGETS")
+
+    cmake_parse_arguments(
+        PARSE_ARGV 0
+        "arg"
+        "${options}"
+        "${one_value_keywords}"
+        "${multi_value_keywords}"
+    )
+
+    if(arg_UNPARSED_ARGUMENTS)
+        message(FATAL_ERROR "Unparsed arguments: ${arg_UNPARSED_ARGUMENTS}")
+    endif()
+
+    # https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html
+    # https://gcc.gnu.org/onlinedocs/gcc/C_002b_002b-Dialect-Options.html#C_002b_002b-Dialect-Options
+    set(gnu_common_options
+        # base
+        -Wall
+        -Wextra
+        # iso
+        -pedantic
+        -Wdeprecated
+        # declaration
+        -Wshadow
+        -Wundef
+        -Wunused-const-variable
+        -Wmissing-declarations
+        # conversion
+        -Wconversion
+        -Wsign-conversion
+        -Warith-conversion
+        -Wcast-qual
+        -Wcast-align=strict
+        # float
+        -Wdouble-promotion
+        -Wfloat-equal
+        # format
+        -Wformat=2
+        -Wformat-overflow=2
+        -Wformat-truncation=2
+        -Wformat-signedness
+        # switch case
+        -Wimplicit-fallthrough=5
+        # flow control statement
+        -Wduplicated-cond
+        -Wduplicated-branches
+        -Wlogical-op
+        # others
+        -Wmissing-include-dirs
+        -Wreturn-type
+        -Wnull-dereference
+    )
+
+    set(gcc_c_options
+        ${gnu_common_options}
+        -Wnested-externs
+        -Wbad-function-cast
+        -Wmissing-prototypes
+        -Wstrict-prototypes
+    )
+
+    if(CMAKE_C_COMPILER_ID MATCHES "GNU")
+        check_c_compiler_flag("-Wmissing-variable-declarations" KRCMAKE_GNU_C_SUPPORT_MISSING_VARIABLE_DECLARATIONS)
+        if(KRCMAKE_GNU_C_SUPPORT_MISSING_VARIABLE_DECLARATIONS)
+            list(APPEND gcc_c_options "-Wmissing-variable-declarations")
+        endif()
+    endif()
+
+    set(gcc_cxx_options
+        ${gnu_common_options}
+        -Wuseless-cast
+        -Wold-style-cast
+        -Wstrict-null-sentinel
+        -Wnon-virtual-dtor
+        -Wextra-semi
+        -Wcatch-value=3
+        -Wplacement-new=2
+        -Waligned-new=all
+        -Wredundant-tags
+        -Wmismatched-tags
+        -Wsuggest-final-types
+        -Wsuggest-final-methods
+        -Wsuggest-override
+    )
+
+    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+        check_cxx_compiler_flag("-Wnrvo" KRCMAKE_GNU_CXX_SUPPORT_NRVO)
+        if(KRCMAKE_GNU_CXX_SUPPORT_NRVO)
+            list(APPEND gcc_cxx_options "-Wnrvo")
+        endif()
+    endif()
+
+    # https://clang.llvm.org/docs/DiagnosticsReference.html
+    set(clang_common_options
+        # base
+        -Wall
+        -Wextra
+        # iso
+        -pedantic
+        -Wdeprecated
+        # declaration
+        -Wshadow-all
+        -Wunused-const-variable
+        -Wunused-exception-parameter
+        -Wundef
+        -Wundefined-internal-type
+        -Wmissing-prototypes
+        # conversion
+        -Wconversion
+        -Wcast-qual
+        -Wcast-align
+        # float
+        -Wdouble-promotion
+        -Wfloat-equal
+        # format
+        -Wformat=2
+        -Wformat-non-iso
+        # -Wformat-signedness
+        -Wformat-pedantic
+        -Wformat-type-confusion
+        # switch case
+        -Wimplicit-fallthrough
+        # flow control statement
+        -Wlogical-op-parentheses
+        # others
+        -Wmissing-include-dirs
+        -Wnewline-eof
+        -Wundefined-reinterpret-cast
+    )
+
+    set(clang_c_develop_options
+        ${clang_common_options}
+        -Wmissing-prototypes
+        -Wmissing-variable-declarations
+    )
+
+    set(clang_cxx_options
+        ${clang_common_options}
+        -Wold-style-cast
+        -Woverloaded-virtual
+        -Wnon-virtual-dtor
+        -Wextra-semi
+        -Wextra-semi-stmt
+        -Wsuggest-override
+    )
+
+    # https://learn.microsoft.com/en-us/cpp/build/reference/compiler-option-warning-level
+    # https://learn.microsoft.com/en-us/cpp/preprocessor/compiler-warnings-that-are-off-by-default
+    # https://github.com/dotnet/project-system/issues/5352
+    set(msvc_options
+        # base
+        /W4
+        # iso
+        /permissive-
+        /we4289
+        # declaration
+        /w44668
+        # conversion
+        /w44242 # narrow cast
+        /w44254 # narrowly cast field bits
+        /w44365 # conversion from signed to unsigned
+        /w44287 # unsigned/negative constant mismatch
+        /w44800 # other type to bool
+        /w44388
+        /w44296 # test unsigned less 0, or greater equal 0
+        /w44165 # test HRESULT
+        /w44905 # LPSTR
+        /w44906 # LPWSTR
+        /w44191 # bad function ptr cast
+        # /w44311 # pointer truncation
+        /w44946
+        # switch case
+        /w44062 # missing case label and no default
+        # other
+        /w44255 # strict prototypes, C only
+        /w44464 # include <../xx.h>
+        /w44746 # a volatile variable is accessed directly
+        /w44555
+        /w44768
+        /w44545
+        /w44546
+        /w44547
+        /w44549
+        /w44608
+        # C++
+        /w44263 # function hide virtual functions from base class
+        /w44265 # has virtual member function with non-virtual dtor
+        /w44355 # using this in initializer list
+        /w44471 # enum forward declaration without underlying type
+    )
+
+    krcmake_target_compile_options(
+        TARGETS ${arg_TARGETS}
+        PRIVATE
+            GNU_C_OPTIONS ${gcc_c_options}
+            GNU_CXX_OPTIONS ${gcc_cxx_options}
+            CLANG_C_OPTIONS ${clang_c_develop_options}
+            CLANG_CXX_OPTIONS ${clang_cxx_options}
+            MSVC_OPTIONS ${msvc_options}
+    )
+
+    if(arg_WARNING_AS_ERROR)
+        krcmake_target_compile_options(
+            TARGETS ${arg_TARGETS}
+            PRIVATE
+                GNU_C_OPTIONS -Werror
+                GNU_CXX_OPTIONS -Werror
+                CLANG_C_OPTIONS -Werror
+                CLANG_CXX_OPTIONS -Werror
+                MSVC_OPTIONS /WX
+        )
+        krcmake_target_link_options(
+            TARGETS ${arg_TARGETS}
+            PUBLIC
+                MSVC_OPTIONS /WX
+        )
+    endif()
+
+    if(arg_ERROR_AS_FATAL)
+        krcmake_target_compile_options(
+            TARGETS ${arg_TARGETS}
+            PRIVATE
+                GNU_C_OPTIONS -Wfatal-errors
+                GNU_CXX_OPTIONS -Wfatal-errors
+                CLANG_C_OPTIONS -Wfatal-errors
+                CLANG_CXX_OPTIONS -Wfatal-errors
+        )
+    endif()
 endfunction()
