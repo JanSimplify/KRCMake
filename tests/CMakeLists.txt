@@ -20,4 +20,9 @@ if(PROJECT_IS_TOP_LEVEL)
     find_package("${package_name}" REQUIRED)
 endif()
 
+#=============================
+# Tests
+#=============================
+
 add_subdirectory(dummy)
+add_subdirectory(target_compile_options)
