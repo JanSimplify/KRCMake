@@ -13,6 +13,9 @@ defaults:
   run:
     shell: bash
 
+env:
+  CTEST_OUTPUT_ON_FAILURE: ON
+
 jobs:
   build:
     runs-on: ${{ matrix.os }}
