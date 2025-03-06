@@ -437,3 +437,65 @@ function(krcmake_target_set_develop_mode)
         )
     endif()
 endfunction()
+
+# krcmake_target_set_sanitizer(
+#   TARGETS [targets...]
+#   [ADDRESS]
+#   [UNDEFINED]
+# )
+function(krcmake_target_set_sanitizer)
+    set(options "ADDRESS;UNDEFINED")
+    set(one_value_keywords)
+    set(multi_value_keywords "TARGETS")
+
+    cmake_parse_arguments(
+        PARSE_ARGV 0
+        "arg"
+        "${options}"
+        "${one_value_keywords}"
+        "${multi_value_keywords}"
+    )
+
+    if(arg_UNPARSED_ARGUMENTS)
+        message(FATAL_ERROR "Unparsed arguments: ${arg_UNPARSED_ARGUMENTS}")
+    endif()
+
+    if(arg_ADDRESS)
+        krcmake_target_compile_options(
+            TARGETS ${arg_TARGETS}
+            PUBLIC
+                GNU_C_OPTIONS "-fsanitize=address"
+                GNU_CXX_OPTIONS "-fsanitize=address"
+                CLANG_C_OPTIONS "-fsanitize=address"
+                CLANG_CXX_OPTIONS "-fsanitize=address"
+                MSVC_OPTIONS "/fsanitize=address"
+        )
+        krcmake_target_link_options(
+            TARGETS ${arg_TARGETS}
+            PUBLIC
+                GNU_C_OPTIONS "-fsanitize=address"
+                GNU_CXX_OPTIONS "-fsanitize=address"
+                CLANG_C_OPTIONS "-fsanitize=address"
+                CLANG_CXX_OPTIONS "-fsanitize=address"
+        )
+    endif()
+
+    if(arg_UNDEFINED)
+        krcmake_target_compile_options(
+            TARGETS ${arg_TARGETS}
+            PUBLIC
+                GNU_C_OPTIONS "-fsanitize=undefined"
+                GNU_CXX_OPTIONS "-fsanitize=undefined"
+                CLANG_C_OPTIONS "-fsanitize=undefined"
+                CLANG_CXX_OPTIONS "-fsanitize=undefined"
+        )
+        krcmake_target_link_options(
+            TARGETS ${arg_TARGETS}
+            PUBLIC
+                GNU_C_OPTIONS "-fsanitize=undefined"
+                GNU_CXX_OPTIONS "-fsanitize=undefined"
+                CLANG_C_OPTIONS "-fsanitize=undefined"
+                CLANG_CXX_OPTIONS "-fsanitize=undefined"
+        )
+    endif()
+endfunction()
