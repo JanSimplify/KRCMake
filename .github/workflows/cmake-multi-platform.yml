@@ -73,6 +73,12 @@ jobs:
 
     - name: Test
       env:
+        OS: ${{ matrix.os }}
         BUILD_TYPE: ${{ matrix.build_type }}
       working-directory: ${{ steps.strings.outputs.build-dir }}
-      run: ctest --build-config "${BUILD_TYPE}"
+      run: |
+        if [[ ${OS} =~ windows* ]]; then
+          ctest --build-config "${BUILD_TYPE}" -LE sanitizer
+        else
+          ctest --build-config "${BUILD_TYPE}"
+        fi
