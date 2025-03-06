@@ -132,3 +132,15 @@ krcmake_target_set_develop_mode(
 ```
 
 注意：`MSVC`不支持`UNDEFINED`选项，静默忽略。
+
+### krcmake_target_set_coverage
+
+设置coverage选项：
+
+```cmake
+krcmake_target_set_coverage(
+    TARGETS [targets...]
+)
+```
+
+注意：`MSVC`下静默忽略。
