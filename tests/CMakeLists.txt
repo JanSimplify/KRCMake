@@ -24,7 +24,6 @@ endif()
 # Tests
 #=============================
 
-add_subdirectory(dummy)
 add_subdirectory(target_compile_options)
 add_subdirectory(target_link_options)
 add_subdirectory(target_set_develop_mode)

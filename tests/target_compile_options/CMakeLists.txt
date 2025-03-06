@@ -8,29 +8,22 @@ include(KRCMakeCompileOptions)
 #=============================
 
 set(test_name "target_compile_options")
-set(test_target "${PROJECT_NAME}_${test_name}")
-string(TOLOWER "${project_name_lowercase}_${test_name}" test_header_set)
 
 #=============================
 # Target
 #=============================
 
 add_executable(
-    "${test_target}"
-)
-
-target_sources(
-    "${test_target}"
-    PRIVATE
-        "c_option.h"
-        "cxx_option.hpp"
-        "c_option.c"
-        "cxx_option.cpp"
-        "main.cpp"
+    "${test_name}"
+    "c_option.h"
+    "cxx_option.hpp"
+    "c_option.c"
+    "cxx_option.cpp"
+    "main.cpp"
 )
 
 krcmake_target_compile_options(
-    TARGETS "${test_target}"
+    TARGETS "${test_name}"
     PRIVATE
         GNU_C_OPTIONS "-DKRCMAKE_SET_GNU_C_OPTIONS"
         GNU_CXX_OPTIONS "-DKRCMAKE_SET_GNU_CXX_OPTIONS"
@@ -45,7 +38,7 @@ krcmake_target_compile_options(
 
 add_test(
     NAME "${test_name}"
-    COMMAND "${test_target}"
+    COMMAND "${test_name}"
 )
 
 set(pass_string "no matched compiler ID")
