@@ -17,6 +17,9 @@ if(PROJECT_SOURCE_DIR STREQUAL PROJECT_BINARY_DIR)
     )
 endif()
 
+string(TOLOWER ${PROJECT_NAME} project_name_lowercase)
+string(TOUPPER ${PROJECT_NAME} project_name_uppercase)
+
 #=============================
 # Options
 #=============================

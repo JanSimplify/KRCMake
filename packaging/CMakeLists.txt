@@ -8,10 +8,10 @@
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
-set(INSTALL_CMAKE_MODULE_DIR "${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}")
+set(INSTALL_CMAKE_MODULE_DIR "${CMAKE_INSTALL_DATADIR}/${project_name_lowercase}")
 
 set(autogen_cmake_config_dir "${PROJECT_BINARY_DIR}/autogen/cmake")
-set(install_cmake_config_dir "${CMAKE_INSTALL_DATADIR}/cmake/${PROJECT_NAME}")
+set(install_cmake_config_dir "${CMAKE_INSTALL_DATADIR}/cmake/${project_name_lowercase}")
 
 set(module_files
     "${PROJECT_SOURCE_DIR}/cmake/KRCMakeGitInfo.cmake"
