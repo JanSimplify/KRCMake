@@ -1,4 +1,4 @@
-name: Code style check
+name: Check code style
 
 on:
   push:
@@ -14,7 +14,7 @@ defaults:
     shell: bash
 
 jobs:
-  check:
+  check-code-sytle:
     runs-on: ubuntu-latest
     steps:
       - name: Compute fetch depth
