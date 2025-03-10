@@ -2,6 +2,46 @@
 
 # KRCMake
 
+CMake跨平台开发实用脚本，功能包括：
+
+- 获取Git信息；
+- 为特定编译器设置编译与链接选项；
+- 设置严格的编译器警告选项、sanitizer选项以及代码覆盖率分析选项。
+
+测试于：
+
+- Ubuntu：GCC，Clang；
+- Windows：MSVC。
+
+macOS&AppleClang、Windows&Clang-cl以及CUDA等编译器与平台组合暂未测试。
+
+## 使用方法
+
+使用FetchContent导入项目：
+
+```cmake
+include(FetchContent)
+
+FetchContent_Declare(
+    KRCMake
+    GIT_REPOSITORY https://github.com/JanSimplify/KRCMake.git
+    GIT_TAG main
+    SYSTEM
+    FIND_PACKAGE_ARGS
+)
+
+FetchContent_MakeAvailable(KRCMake)
+```
+
+根据需要引入对应的模块：
+
+```cmake
+# 获取git信息
+include(KRDevGitInfo)
+# 设置编译选项等
+include(KRDevCompilerOption)
+```
+
 ## 获取Git提交信息
 
 ### krcmake_get_git_describe
