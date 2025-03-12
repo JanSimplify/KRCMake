@@ -164,11 +164,11 @@ krcmake_target_set_develop_mode(
 设置sanitizer编译和链接选项：
 
 ```cmake
-# krcmake_target_set_sanitizer(
-#   TARGETS [targets...]
-#   [ADDRESS]
-#   [UNDEFINED]
-# )
+krcmake_target_set_sanitizer(
+    TARGETS [targets...]
+    [ADDRESS]
+    [UNDEFINED]
+)
 ```
 
 注意：`MSVC`不支持`UNDEFINED`选项，静默忽略。
